@@ -1,23 +1,43 @@
-//
-//  ContentView.swift
-//  LiveLookUp
-//
-//  Created by Глеб Фандеев on 26.07.2024.
-//
-
 import SwiftUI
+import IdentityLookup
 
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            button("Open Settings") {
+                Task {
+                    do {
+                        try await LiveCallerIDLookupManager.shared.openSettings()
+                    } catch {
+                        print(error)
+                    }
+                }
+            }
+            button("Check Status") {
+                let status = LiveCallerIDLookupManager.shared.status(
+                    forExtensionWithIdentifier: extensionIdentifier
+                )
+                print(status)
+            }
         }
-        .padding()
+    }
+    
+    private func button(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(
+            action: action,
+            label: {
+                Text(title)
+                    .foregroundColor(.white)
+            }
+        )
+        .padding(10)
+        .background(.gray.opacity(0.5))
+        .cornerRadius(10)
+
     }
 }
+
+private let extensionIdentifier = "..."
 
 #Preview {
     ContentView()
